@@ -9,8 +9,8 @@ Docker-IIS<br>
 ├── docker-compose.yml<br>
 │<br>
 └── web<br>
-&ensp;├── Dockerfile<br>
-&ensp;└── wwwroot<br>
-&ensp;&ensp;├── index.html<br>
-&ensp;&ensp;└── mobile<br>
+&ensp;&ensp;├── Dockerfile<br>
+&ensp;&ensp;└── wwwroot<br>
+&ensp;&ensp;&ensp;&ensp;├── index.html<br>
+&ensp;&ensp;&ensp;&ensp;└── mobile<br>
 
