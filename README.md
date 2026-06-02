@@ -4,13 +4,13 @@ Referencias: https://hub.docker.com/r/microsoft/windows-servercore-iis
 
 Base esqueleto:
 
-Docker-IIS
-│
-├── docker-compose.yml
-│
-└── web
-    ├── Dockerfile
-    └── wwwroot
-         ├── index.html
-         └── mobile
+Docker-IIS<br>
+│<br>
+├── docker-compose.yml<br>
+│<br>
+└── web<br>
+    ├── Dockerfile<br>
+    └── wwwroot<br>
+         ├── index.html<br>
+         └── mobile<br>
 
