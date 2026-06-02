@@ -1,0 +1,16 @@
+services:
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+
+    container_name: web-iis
+
+    ports:
+      - "8000:80"
+
+    volumes:
+      - ./web/wwwroot:C:/inetpub/wwwroot #te permitirá editar HTML en VS Code y ver los cambios inmediatamente.
+
+    restart: unless-stopped
