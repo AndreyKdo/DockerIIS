@@ -1,27 +1,248 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Primer index</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h1>Primer index</h1>
-        <p>Hola mundo</p>
-        <p>Esto es un párrafo de prueba.</p>
-        <p>Hola como te va</p>
-        <p>TEST</p>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
-        <script src="" async defer></script>
-    </body>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DockerWebinar · Laboratorio Windows + Linux Containers</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
+  <div class="container-fluid px-4">
+    <span class="navbar-brand fw-bold">
+      <i class="fa-brands fa-docker me-2"></i>DockerWebinar
+    </span>
+    <span class="badge rounded-pill bg-dark border border-secondary text-secondary-emphasis small">
+      IIS (Windows) &rarr; APIs (Windows) &rarr; SQL Server (Linux/WSL2)
+    </span>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 py-4">
+
+  <!-- ===================== HERO / ARQUITECTURA ===================== -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="hero-panel p-4 p-md-5">
+        <p class="eyebrow mb-2">Laboratorio hibrido &middot; microservicios independientes</p>
+        <h1 class="hero-title mb-3">Clientes y pagos, servidos por dos motores Docker distintos</h1>
+        <p class="hero-sub mb-0">
+          Este sitio corre en un contenedor <strong>Windows</strong> (IIS) y habla, por red TCP/IP, con cuatro <strong>microservicios .NET</strong> propios, uno por cada operación, también en contenedores Windows, 
+          que a su vez insertan y consultan datos en un <strong>SQL Server 2022</strong> corriendo como contenedor <strong>Linux</strong> dentro de WSL2. Si apagas cualquiera de los cuatro microservicios, los otros tres siguen funcionando: eso es lo que queremos evidenciar aquí.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ESTADO DE SERVICIOS ===================== -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-6 col-lg-3">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">registro-cliente <span class="mono small">:5001</span></div>
+          <div class="status-desc">POST /registrocliente</div>
+        </div>
+        <span id="badge-registrocliente" class="status-pill status-checking">
+          <span class="dot"></span>verificando…
+        </span>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">registro-pago <span class="mono small">:5002</span></div>
+          <div class="status-desc">POST /registropago</div>
+        </div>
+        <span id="badge-registropago" class="status-pill status-checking">
+          <span class="dot"></span>verificando…
+        </span>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">consulta-clientes <span class="mono small">:5003</span></div>
+          <div class="status-desc">GET /consultaclientes</div>
+        </div>
+        <span id="badge-consultaclientes" class="status-pill status-checking">
+          <span class="dot"></span>verificando…
+        </span>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">consulta-pagos <span class="mono small">:5004</span></div>
+          <div class="status-desc">GET /consultapagos</div>
+        </div>
+        <span id="badge-consultapagos" class="status-pill status-checking">
+          <span class="dot"></span>verificando…
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">SQL Server <span class="mono small">host.docker.internal:1433</span></div>
+          <div class="status-desc">Linux container (WSL2) — compartido por los 4 microservicios</div>
+        </div>
+        <button id="btn-refresh" class="btn btn-sm btn-outline-light">
+          <i class="fa-solid fa-arrows-rotate me-1"></i>Reintentar todo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- ===================== REGISTRAR CLIENTE ===================== -->
+    <div class="col-lg-6">
+      <div class="panel p-4 h-100">
+        <div class="panel-head mb-3">
+          <span class="panel-tag tag-write">POST</span>
+          <h2 class="panel-title">Registrar cliente</h2>
+          <p class="panel-sub">Envía a <span class="mono">registro-cliente</span> · <span class="mono">/registrocliente</span></p>
+        </div>
+
+        <div id="alert-cliente" class="alert-slot mb-3"></div>
+
+        <form id="form-cliente" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Cédula</label>
+            <input type="text" class="form-control" id="cliente-cedula" placeholder="1-1111-1111" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" id="cliente-nombre" placeholder="Nombre y apellidos" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Saldo inicial</label>
+            <input type="number" step="0.01" min="0" class="form-control" id="cliente-saldo" placeholder="0.00" required>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-brand w-100">
+              <i class="fa-solid fa-user-plus me-2"></i>Guardar cliente
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===================== REGISTRAR PAGO ===================== -->
+    <div class="col-lg-6">
+      <div class="panel p-4 h-100">
+        <div class="panel-head mb-3">
+          <span class="panel-tag tag-write">POST</span>
+          <h2 class="panel-title">Registrar pago</h2>
+          <p class="panel-sub">Envía a <span class="mono">registro-pago</span> · <span class="mono">/registropago</span></p>
+        </div>
+
+        <div id="alert-pago" class="alert-slot mb-3"></div>
+
+        <form id="form-pago" class="row g-3">
+          <div class="col-6">
+            <label class="form-label">ID de cliente</label>
+            <input type="number" min="1" class="form-control" id="pago-clienteid" placeholder="Ej: 1" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Monto</label>
+            <input type="number" step="0.01" min="0" class="form-control" id="pago-monto" placeholder="0.00" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Referencia</label>
+            <input type="text" class="form-control" id="pago-referencia" placeholder="Nº de transacción">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Estado</label>
+            <select id="pago-estado" class="form-select">
+              <option value="Completado">Completado</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Rechazado">Rechazado</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-brand w-100">
+              <i class="fa-solid fa-money-check-dollar me-2"></i>Guardar pago
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===================== CONSULTAR CLIENTES ===================== -->
+    <div class="col-lg-6">
+      <div class="panel p-4 h-100">
+        <div class="panel-head mb-3 d-flex justify-content-between align-items-start">
+          <div>
+            <span class="panel-tag tag-read">GET</span>
+            <h2 class="panel-title">Clientes registrados</h2>
+            <p class="panel-sub">Lee de <span class="mono">consulta-clientes</span> · <span class="mono">/consultaclientes</span></p>
+          </div>
+          <button id="btn-cargar-clientes" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-rotate me-1"></i>Cargar
+          </button>
+        </div>
+
+        <div id="alert-clientes" class="alert-slot mb-3"></div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr><th>ID</th><th>Cédula</th><th>Nombre</th><th class="text-end">Saldo</th></tr>
+            </thead>
+            <tbody id="tabla-clientes">
+              <tr><td colspan="4" class="text-secondary text-center py-4">Sin datos cargados todavía</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== CONSULTAR PAGOS ===================== -->
+    <div class="col-lg-6">
+      <div class="panel p-4 h-100">
+        <div class="panel-head mb-3 d-flex justify-content-between align-items-start">
+          <div>
+            <span class="panel-tag tag-read">GET</span>
+            <h2 class="panel-title">Pagos registrados</h2>
+            <p class="panel-sub">Lee de <span class="mono">consulta-pagos</span> · <span class="mono">/consultapagos</span></p>
+          </div>
+          <button id="btn-cargar-pagos" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-rotate me-1"></i>Cargar
+          </button>
+        </div>
+
+        <div id="alert-pagos" class="alert-slot mb-3"></div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr><th>ID</th><th>Cliente</th><th class="text-end">Monto</th><th>Fecha</th><th>Estado</th></tr>
+            </thead>
+            <tbody id="tabla-pagos">
+              <tr><td colspan="5" class="text-secondary text-center py-4">Sin datos cargados todavía</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-secondary small py-5">
+    DockerWebinar · IIS (Windows Container) consumiendo microservicios .NET (Windows Containers) sobre SQL Server (Linux Container / WSL2)
+    Desarrollado por <a href="https://www.linkedin.com/in/andrey-picado-arias-981b57145" target="_blank" class="text-primary-emphasis">Andrey F. Picado Arias</a> &middot; 
+  </footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
 </html>

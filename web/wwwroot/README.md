@@ -147,10 +147,6 @@ casos. El badge de estado de cada microservicio en la parte superior de la pági
 (verde/rojo) se actualiza automáticamente cada 15 segundos, y también al presionar
 "Reintentar todo".
 
-Adicionalmente, un ejemplo de recreate en caso que hagamos una modificación al código:
-
-docker compose up -d --force-recreate api-pagos api-consultas
-
 ## Cómo reemplazar un microservicio
 
 Cada carpeta (`registro-cliente/`, `registro-pago/`, `consulta-clientes/`,

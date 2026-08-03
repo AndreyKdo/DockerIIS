@@ -1,0 +1,59 @@
+services:
+
+  # ---------------------------------------------------------------
+  # Sitio web (IIS) - contenedor Windows
+  # ---------------------------------------------------------------
+  web:
+    build:
+      context: ./web
+    container_name: web-iis
+    ports:
+      - "8000:80"
+    volumes:
+      - ./web/wwwroot:C:/inetpub/wwwroot
+    restart: unless-stopped
+    networks:
+      - dockerlab
+
+  # ---------------------------------------------------------------
+  # Microservicio 1: api-pagos (INSERTAR registros)
+  # Servicio independiente: si se detiene, solo afectan los
+  # formularios de "Registrar cliente" / "Registrar pago".
+  # ---------------------------------------------------------------
+  api-pagos:
+    build:
+      context: ./api-pagos
+    container_name: api-pagos
+    ports:
+      - "5001:8080"
+    environment:
+      SQL_SERVER: "host.docker.internal"    # IP real de tu Wi-Fi (ipconfig) "host.docker.internal"  # IP del contenedor Linux (puede cambiar)
+      SQL_DATABASE: "DockerWebinar"
+      SQL_USER: "sa"
+      SQL_PASSWORD: "DockerDemo2026!"
+    restart: unless-stopped
+    networks:
+      - dockerlab
+
+  # ---------------------------------------------------------------
+  # Microservicio 2: api-consultas (CONSULTAR registros)
+  # Servicio independiente: si se detiene, solo afectan las tablas
+  # de "Clientes registrados" / "Pagos registrados".
+  # ---------------------------------------------------------------
+  api-consultas:
+    build:
+      context: ./api-consultas
+    container_name: api-consultas
+    ports:
+      - "5002:8080"
+    environment:
+      SQL_SERVER: "host.docker.internal"    # IP real de tu Wi-Fi (ipconfig)  # ver nota mas abajo sobre por que no usamos la IP de WSL2
+      SQL_DATABASE: "DockerWebinar"
+      SQL_USER: "sa"
+      SQL_PASSWORD: "DockerDemo2026!"
+    restart: unless-stopped
+    networks:
+      - dockerlab
+
+networks:
+  dockerlab:
