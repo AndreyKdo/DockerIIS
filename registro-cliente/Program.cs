@@ -14,7 +14,7 @@ string sqlPassword = Environment.GetEnvironmentVariable("SQL_PASSWORD") ?? "Dock
 
 string connectionString =
     $"Server={sqlServer},1433;Database={sqlDatabase};User Id={sqlUser};Password={sqlPassword};" +
-    "TrustServerCertificate=True;Connect Timeout=5;";
+    "TrustServerCertificate=True;Connect Timeout=30;Encrypt=False;";
 
 builder.Services.AddCors(options =>
 {
