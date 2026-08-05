@@ -22,14 +22,41 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors("PermitirTodo");
 
+// -----------------------------------------------------------------
+// Abre la conexion a SQL Server con reintentos. La ruta de red de
+// este laboratorio (contenedor Windows -> portproxy -> WSL2 ->
+// contenedor Linux) puede perder el handshake inicial de forma
+// intermitente; reintentar 2-3 veces es mas robusto que subir el
+// timeout indefinidamente.
+// -----------------------------------------------------------------
+async Task<SqlConnection> AbrirConexionAsync()
+{
+    Exception ultimoError = new Exception("No se pudo abrir la conexion");
+    for (int intento = 1; intento <= 3; intento++)
+    {
+        try
+        {
+            var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync();
+            return conn;
+        }
+        catch (Exception ex)
+        {
+            ultimoError = ex;
+            Console.WriteLine($"[SQL] Intento {intento}/3 fallido: {ex.Message}");
+            if (intento < 3) await Task.Delay(700);
+        }
+    }
+    throw ultimoError;
+}
+
 app.MapGet("/health", () => Results.Ok(new { status = "ok", service = "registro-pago" }));
 
 app.MapGet("/health/db", async () =>
 {
     try
     {
-        await using var conn = new SqlConnection(connectionString);
-        await conn.OpenAsync();
+        await using var conn = await AbrirConexionAsync();
         await using var cmd = new SqlCommand("SELECT 1", conn);
         await cmd.ExecuteScalarAsync();
         return Results.Ok(new { status = "ok", server = sqlServer, database = sqlDatabase });
@@ -51,12 +78,11 @@ app.MapPost("/registropago", async (PagoInsertDto dto) =>
 {
     try
     {
-        await using var conn = new SqlConnection(connectionString);
-        await conn.OpenAsync();
+        await using var conn = await AbrirConexionAsync();
 
         const string sql = @"INSERT INTO Pagos (ClienteId, Monto, Fecha, Referencia, Estado)
                               OUTPUT INSERTED.PagoId
-                              VALUES (@ClienteId, @Monto, GETDATE(), @Referencia, @Estado)";
+                              VALUES (@ClienteId, @Monto, SYSUTCDATETIME(), @Referencia, @Estado)";
 
         await using var cmd = new SqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@ClienteId", dto.ClienteId);
