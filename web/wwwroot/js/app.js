@@ -222,6 +222,23 @@ async function cargarPagos() {
   }
 }
 
+//Mostrar IP del Servidor SQL
+async function mostrarServidorSql() {
+  try {
+    const resp = await fetch(`${CONFIG.CONSULTA_CLIENTES_URL}/health/db`, {
+      signal: AbortSignal.timeout(4000)
+    });
+    const data = await resp.json();
+    const label = document.getElementById("sql-server-label");
+    if (data.server) {
+      label.textContent = `${data.server}:1433`;
+    }
+  } catch {
+    document.getElementById("sql-server-label").textContent = "no disponible";
+  }
+}
+
+
 document.getElementById("btn-cargar-clientes").addEventListener("click", cargarClientes);
 document.getElementById("btn-cargar-pagos").addEventListener("click", cargarPagos);
 document.getElementById("btn-refresh").addEventListener("click", () => {
@@ -232,6 +249,7 @@ document.getElementById("btn-refresh").addEventListener("click", () => {
 
 // Carga inicial
 chequearTodos();
+mostrarServidorSql();
 cargarClientes();
 cargarPagos();
 

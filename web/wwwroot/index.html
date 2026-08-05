@@ -18,8 +18,8 @@
     <span class="navbar-brand fw-bold">
       <i class="fa-brands fa-docker me-2"></i>DockerWebinar
     </span>
-    <span class="badge rounded-pill bg-dark border border-secondary text-secondary-emphasis small">
-      IIS (Windows) &rarr; APIs (Windows) &rarr; SQL Server (Linux/WSL2)
+    <span class="badge rounded-pill bg-dark border border-secondary text-primary-white small">
+      IIS (Windows) &rarr; APIs (Windows) &rarr; SQL Server (Linux/VM)
     </span>
   </div>
 </nav>
@@ -32,9 +32,12 @@
       <div class="hero-panel p-4 p-md-5">
         <p class="eyebrow mb-2">Laboratorio hibrido &middot; microservicios independientes</p>
         <h1 class="hero-title mb-3">Clientes y pagos, servidos por dos motores Docker distintos</h1>
+        <p class="hero-sub mb-2">
+          Este sitio corre en un contenedor <strong>Windows</strong> (IIS) y habla, por red TCP/IP, con cuatro <strong>microservicios .NET</strong>, uno por cada operación, también en contenedores Windows.
+        </p>
         <p class="hero-sub mb-0">
-          Este sitio corre en un contenedor <strong>Windows</strong> (IIS) y habla, por red TCP/IP, con cuatro <strong>microservicios .NET</strong> propios, uno por cada operación, también en contenedores Windows, 
-          que a su vez insertan y consultan datos en un <strong>SQL Server 2022</strong> corriendo como contenedor <strong>Linux</strong> dentro de WSL2. Si apagas cualquiera de los cuatro microservicios, los otros tres siguen funcionando: eso es lo que queremos evidenciar aquí.
+          Esos microservicios insertan y consultan datos en un <strong>SQL Server 2022</strong> corriendo como contenedor <strong>Linux</strong>, dentro de una máquina virtual Ubuntu
+          26.04 LTS. Si apagas cualquiera de los cuatro microservicios, los otros tres siguen funcionando: eso es lo que queremos evidenciar aquí.
         </p>
       </div>
     </div>
@@ -45,7 +48,7 @@
     <div class="col-md-6 col-lg-3">
       <div class="status-card p-3 d-flex align-items-center justify-content-between">
         <div>
-          <div class="status-label">registro-cliente <span class="mono small">:5001</span></div>
+          <div class="status-label">registro-cliente<span class="mono small">:5001</span></div>
           <div class="status-desc">POST /registrocliente</div>
         </div>
         <span id="badge-registrocliente" class="status-pill status-checking">
@@ -56,7 +59,7 @@
     <div class="col-md-6 col-lg-3">
       <div class="status-card p-3 d-flex align-items-center justify-content-between">
         <div>
-          <div class="status-label">registro-pago <span class="mono small">:5002</span></div>
+          <div class="status-label">registro-pago<span class="mono small">:5002</span></div>
           <div class="status-desc">POST /registropago</div>
         </div>
         <span id="badge-registropago" class="status-pill status-checking">
@@ -67,7 +70,7 @@
     <div class="col-md-6 col-lg-3">
       <div class="status-card p-3 d-flex align-items-center justify-content-between">
         <div>
-          <div class="status-label">consulta-clientes <span class="mono small">:5003</span></div>
+          <div class="status-label">consulta-clientes<span class="mono small">:5003</span></div>
           <div class="status-desc">GET /consultaclientes</div>
         </div>
         <span id="badge-consultaclientes" class="status-pill status-checking">
@@ -78,7 +81,7 @@
     <div class="col-md-6 col-lg-3">
       <div class="status-card p-3 d-flex align-items-center justify-content-between">
         <div>
-          <div class="status-label">consulta-pagos <span class="mono small">:5004</span></div>
+          <div class="status-label">consulta-pagos<span class="mono small">:5004</span></div>
           <div class="status-desc">GET /consultapagos</div>
         </div>
         <span id="badge-consultapagos" class="status-pill status-checking">
@@ -92,8 +95,8 @@
     <div class="col-12">
       <div class="status-card p-3 d-flex align-items-center justify-content-between">
         <div>
-          <div class="status-label">SQL Server <span class="mono small">host.docker.internal:1433</span></div>
-          <div class="status-desc">Linux container (WSL2) — compartido por los 4 microservicios</div>
+          <div class="status-label">SQL Server <span id="sql-server-label" class="mono small">host.docker.internal:1433</span></div>
+          <div class="status-desc">Linux container (Ubuntu VM) compartido por los 4 microservicios</div>
         </div>
         <button id="btn-refresh" class="btn btn-sm btn-outline-light">
           <i class="fa-solid fa-arrows-rotate me-1"></i>Reintentar todo
@@ -236,10 +239,14 @@
     </div>
   </div>
 
-  <footer class="text-center text-secondary small py-5">
-    DockerWebinar · IIS (Windows Container) consumiendo microservicios .NET (Windows Containers) sobre SQL Server (Linux Container / Ubuntu VM) <br>
-    Desarrollado por <a href="https://www.linkedin.com/in/andrey-picado-arias-981b57145" target="_blank" class="text-primary-emphasis">Andrey F. Picado Arias</a> &middot; 
-  </footer>
+  <footer class="text-center small py-5 text-white-50">
+  DockerWebinar · IIS (Windows Container) consumiendo microservicios .NET (Windows Containers) sobre SQL Server (Linux Container / Ubuntu VM) <br>
+  <span class="text-white">
+    Desarrollado por
+    <a href="https://www.linkedin.com/in/andrey-picado-arias-981b57145" target="_blank"
+       class="link-light link-underline-opacity-25 link-underline-opacity-100-hover">Andrey F. Picado Arias</a> &middot;
+  </span>
+</footer>
 </div>
 
 <script src="js/config.js"></script>
