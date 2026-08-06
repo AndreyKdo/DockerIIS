@@ -36,9 +36,9 @@ y `/health/db` para diagnóstico). Puedes reemplazar cualquiera sin tocar los de
 basta con cambiar el contenido de su carpeta (o apuntar `build.context` a otra ruta en
 `docker-compose.yml`) y correr `docker compose up --build -d <nombre-del-servicio>`.
 
-## SQL Server (Linux Container en WSL2)
+## SQL Server (Linux Container en VMware Workstation)
 
-Este SQL Server (Linux/Ubuntu container en WSL2) se queda exactamente igual a como ya
+Este SQL Server (Linux/Ubuntu container en VMware Workstation) se queda exactamente igual a como ya
 lo tenías corriendo; no se toca su `docker-compose`, porque los dos motores Docker
 (Windows y Linux/WSL2) son completamente independientes:
 
@@ -59,40 +59,52 @@ volumes:
   sql_data:
 ```
 
-## Requisito de host (una sola vez): reenvío de puerto Windows → WSL2
+## Requisito de host: Configuración de red Bridged (Windows → Ubuntu VM en VMware Workstation)
 
-Antes de levantar los microservicios, el host Windows necesita reenviar el puerto 1433
-a **todas** las interfaces, porque WSL2 solo lo reenvía por defecto a `127.0.0.1`
-(loopback) — y un contenedor Windows no puede usar el `localhost` del host. Sin este
-paso, los cuatro microservicios fallan con `SqlException ... The wait operation timed
-out.` aunque SQL Server esté corriendo bien.
+Para que los **contenedores Windows** (ejecutados en la máquina local/host) puedan comunicarse con el **contenedor Linux de SQL Server** alojado dentro de la VM Ubuntu, es necesario configurar el adaptador de red de la máquina virtual en modo **Bridged (Puente)** en VMware Workstation.
 
-En PowerShell **como administrador**, una sola vez (persiste entre reinicios del host,
-incluso si cambia la IP interna de WSL2, porque ahora se usa `127.0.0.1`):
+### ¿Por qué es necesario?
 
-```powershell
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=1433 connectaddress=127.0.0.1 connectport=1433
+Por defecto, VMware Workstation utiliza NAT para las máquinas virtuales, lo cual aísla a la VM detrás de una red virtual interna y le asigna una IP que no es directamente visible ni enrutable desde el host ni desde los contenedores Windows que corren sobre él. Al usar el modo **Bridged**, la VM Ubuntu obtiene una IP dentro de la misma red local (LAN) que la máquina física, permitiendo que el contenedor de SQL Server sea alcanzable como si fuera un equipo más de la red.
+
+### Pasos de configuración
+
+1. Abrir VMware Workstation y seleccionar la máquina virtual Ubuntu.
+2. Ir a **VM > Settings (Configuración) > Network Adapter (Adaptador de red)**.
+3. Seleccionar la opción **Bridged: Connected directly to the physical network**.
+4. (Opcional pero recomendado) Marcar **Replicate physical network connection state** para que la VM siga la conexión del host.
+5. Iniciar/reiniciar la VM y verificar que obtuvo una IP dentro del mismo rango de la red local, con:
+```bash
+   ip a
 ```
-
-Verificar que quedó activo:
-
+6. Confirmar conectividad desde el host hacia la VM:
 ```powershell
-netsh interface portproxy show v4tov4
+   ping <IP_DE_LA_VM_UBUNTU>
 ```
+7. Verificar que el puerto de SQL Server (por defecto **1433**) esté expuesto y accesible desde el contenedor Windows, ajustando la cadena de conexión de los microservicios .NET para apuntar a la IP de la VM en lugar de `localhost`.
 
-Con esto, `host.docker.internal:1433` (usado en `docker-compose.yml`) queda accesible
-desde los contenedores Windows.
+### Solución de problemas: la VM se queda atascada al iniciar (búsqueda de red)
 
-Si alguna vez lo necesitas quitar:
+Si al encender la VM esta se queda "colgada" o atascada durante la fase de búsqueda/inicialización de red, sigue estos pasos:
 
-```powershell
-netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=1433
-```
+1. Asegúrate de que la VM esté **detenida** (Stopped), no solo suspendida.
+2. Abre el **VMware Virtual Network Editor** (Inicio > buscar "Virtual Network Editor").
+3. Ejecútalo **como administrador**. Esto es importante: si no lo ejecutas como administrador, **VMnet0 no será visible** en la lista. También puedes hacer clic en el botón inferior **"Change Settings"** para elevar permisos dentro de la misma ventana.
+4. Selecciona **VMnet0** en la lista y haz clic en **"Automatic Settings..."**.
+5. Se mostrará un listado de adaptadores de red disponibles. **Deselecciona todos excepto la tarjeta de red física** que estás usando para salir a internet/LAN.
+   > Nota: en algunas instalaciones (por ejemplo, tras migrar de VMware Player a Workstation), todos los adaptadores quedan marcados por defecto, lo cual puede causar conflictos y provocar que la VM se atasque buscando la interfaz correcta.
+6. Haz clic en **Apply** y **OK** para guardar los cambios.
+7. Vuelve a iniciar la VM; debería arrancar normalmente y obtener IP en modo Bridged sin quedarse atascada.
+
+
+### Resultado esperado
+
+Con esta configuración, los contenedores Windows (IIS + microservicios .NET) podrán resolver y conectarse directamente a la IP de la VM Ubuntu, permitiendo que la arquitectura híbrida del laboratorio (Windows Containers ↔ SQL Server en Linux Container) funcione correctamente durante las pruebas y la presentación.
 
 ## Pasos para levantar el laboratorio
 
 1. **Prepara la base de datos** (una sola vez). Desde SSMS, conectado a `localhost,1433`
-   (o la IP de tu WSL2) con el usuario `sa`, ejecuta el script
+   (o la IP de tu VM) con el usuario `sa`, ejecuta el script
    `database/init/sql/init-dockerwebinar.sql`. Esto crea la base `DockerWebinar`, las
    tablas `Clientes` y `Pagos`, y algunos clientes de ejemplo.
 
@@ -165,7 +177,7 @@ Cada carpeta (`registro-cliente/`, `registro-pago/`, `consulta-clientes/`,
 
 ## Notas técnicas
 
-- Los cuatro microservicios están en imágenes **Windows** (`nanoserver-ltsc2022`) para
+- Los cuatro microservicios están en imágenes **Windows** (`windowsservercore-ltsc2022`) para
   vivir en el mismo `docker-compose.yml` del motor Windows, junto con IIS — evidenciando
   microservicios separados, cada uno con su propio ciclo de vida, dentro del mismo
   stack de contenedores Windows.
