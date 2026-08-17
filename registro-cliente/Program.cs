@@ -3,9 +3,7 @@ using Microsoft.Data.SqlClient;
 var builder = WebApplication.CreateBuilder(args);
 
 // -----------------------------------------------------------------
-// Configuracion de conexion a SQL Server (contenedor Linux via WSL2,
-// alcanzado desde el contenedor Windows a traves de host.docker.internal
-// + el netsh portproxy configurado en el host - ver README).
+// Configuracion de conexion a SQL Server host.docker.internal se indica como host de SQL por defecto, pero puede ser sobreescrito con variables de entorno
 // -----------------------------------------------------------------
 string sqlServer = Environment.GetEnvironmentVariable("SQL_SERVER") ?? "host.docker.internal";
 string sqlDatabase = Environment.GetEnvironmentVariable("SQL_DATABASE") ?? "DockerWebinar";
@@ -28,9 +26,7 @@ var app = builder.Build();
 app.UseCors("PermitirTodo");
 
 // -----------------------------------------------------------------
-// Abre la conexion a SQL Server con reintentos. La ruta de red de
-// este laboratorio (contenedor Windows -> portproxy -> WSL2 ->
-// contenedor Linux) puede perder el handshake inicial de forma
+// Abre la conexion a SQL Server con reintentos. La ruta de red puede perder el handshake inicial de forma
 // intermitente; reintentar 2-3 veces es mas robusto que subir el
 // timeout indefinidamente.
 // -----------------------------------------------------------------

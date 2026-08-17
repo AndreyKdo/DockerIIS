@@ -1,7 +1,7 @@
 -- ============================================================
 -- Script de inicializacion: Base de datos DockerWebinar
 -- Ejecutar desde SSMS o sqlcmd conectado al contenedor SQL Server
--- Servidor: 192.168.92.148 (la IP puede cambiar en tu entorno)
+-- Servidor: 192.168.6.129 (la IP puede cambiar en tu entorno)
 -- Usuario:  sa
 -- ============================================================
 
