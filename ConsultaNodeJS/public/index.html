@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consulta-clientes · Node.js</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
+  <div class="container-fluid px-4">
+    <span class="navbar-brand fw-bold">
+      <i class="fa-brands fa-node-js me-2"></i>consulta-clientes <span class="mono small text-secondary">Node.js</span>
+    </span>
+    <span class="badge rounded-pill bg-dark border border-secondary text-primary-white small">
+      Vista web (Linux) &rarr; API Node.js (Linux) &rarr; SQL Server (Linux/VM)
+    </span>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 py-4">
+
+  <!-- ===================== HERO ===================== -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="hero-panel p-4 p-md-5">
+        <p class="eyebrow mb-2">Laboratorio hibrido &middot; version Node.js del microservicio</p>
+        <h1 class="hero-title mb-3">El mismo contrato JSON, servido por Node en vez de .NET</h1>
+        <p class="hero-sub mb-2">
+          Esta vista corre junto al microservicio <strong>consulta-clientes-node</strong> dentro del mismo contenedor <strong>Linux</strong>, sin depender del sitio IIS.
+        </p>
+        <p class="hero-sub mb-0">
+          Consulta el mismo <strong>SQL Server</strong> que los microservicios .NET, para evidenciar que la conexion a la base de datos es transferible entre lenguajes.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ESTADO DEL SERVICIO ===================== -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="status-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="status-label">consulta-clientes-node<span class="mono small">:8080</span></div>
+          <div class="status-desc">GET /consultaclientes &middot; SQL Server <span id="sql-server-label" class="mono">?</span></div>
+        </div>
+        <span id="badge-consultaclientes" class="status-pill status-checking">
+          <span class="dot"></span>verificando…
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CONSULTAR CLIENTES ===================== -->
+  <div class="row g-4">
+    <div class="col-lg-8 mx-auto">
+      <div class="panel p-4 h-100">
+        <div class="panel-head mb-3 d-flex justify-content-between align-items-start">
+          <div>
+            <span class="panel-tag tag-read">GET</span>
+            <h2 class="panel-title">Clientes registrados</h2>
+            <p class="panel-sub">Lee de <span class="mono">consulta-clientes-node</span> · <span class="mono">/consultaclientes</span></p>
+          </div>
+          <button id="btn-cargar-clientes" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-rotate me-1"></i>Cargar
+          </button>
+        </div>
+
+        <div id="alert-clientes" class="alert-slot mb-3"></div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr><th>ID</th><th>Cédula</th><th>Nombre</th><th class="text-end">Saldo</th></tr>
+            </thead>
+            <tbody id="tabla-clientes">
+              <tr><td colspan="4" class="text-secondary text-center py-4">Sin datos cargados todavía</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center small py-5 text-white-50">
+  consulta-clientes-node · Node.js + Express (Linux Container) sobre SQL Server (Linux Container / Ubuntu VM) <br>
+  <span class="text-white">
+    Desarrollado por
+    <a href="https://www.linkedin.com/in/andrey-picado-arias-981b57145" target="_blank"
+       class="link-light link-underline-opacity-25 link-underline-opacity-100-hover">Andrey F. Picado Arias</a> &middot;
+  </span>
+</footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

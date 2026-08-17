@@ -1,0 +1,186 @@
+:root {
+  --bg-dark: #131D33;
+  --bg-panel: #1B2740;
+  --bg-panel-soft: #17213A;
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --brand: #0DB7ED;
+  --brand-soft: rgba(13, 183, 237, 0.15);
+  --ok: #3ECF8E;
+  --warn: #F2B84B;
+  --err: #F2545B;
+  --text-soft: rgba(255, 255, 255, 0.65);
+}
+
+body {
+  background: var(--bg-dark);
+  color: #EDEFF4;
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+h1, h2, .navbar-brand {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---------- Navbar ---------- */
+.app-navbar {
+  background: rgba(19, 29, 51, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.text-primary-white {
+  color: #EDEFF4 !important;
+}
+
+/* ---------- Hero ---------- */
+.hero-panel {
+  background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-panel-soft) 100%);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.hero-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.hero-sub {
+  color: var(--text-soft);
+  max-width: 60ch;
+}
+
+/* ---------- Status card ---------- */
+.status-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+}
+
+.status-label {
+  font-weight: 600;
+}
+
+.status-desc {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.status-pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-checking {
+  background: rgba(242, 184, 75, 0.12);
+  color: var(--warn);
+}
+.status-checking .dot { background: var(--warn); }
+
+.status-ok {
+  background: rgba(62, 207, 142, 0.12);
+  color: var(--ok);
+}
+.status-ok .dot { background: var(--ok); }
+
+.status-error {
+  background: rgba(242, 84, 91, 0.12);
+  color: var(--err);
+}
+.status-error .dot { background: var(--err); }
+
+/* ---------- Panels ---------- */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+}
+
+.panel-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.tag-read {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.tag-write {
+  background: rgba(242, 184, 75, 0.12);
+  color: var(--warn);
+}
+
+.panel-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.panel-sub {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  margin-bottom: 0;
+}
+
+/* ---------- Tables ---------- */
+.table-dark {
+  --bs-table-bg: transparent;
+}
+
+.table-responsive {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ---------- Alerts ---------- */
+.alert-slot:empty {
+  display: none;
+}
+
+/* ---------- Buttons ---------- */
+.btn-brand {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #051019;
+  font-weight: 600;
+}
+
+.btn-brand:hover {
+  background: #0aa3d4;
+  border-color: #0aa3d4;
+  color: #051019;
+}
+
+.btn-outline-light {
+  border-color: var(--border-soft);
+}
