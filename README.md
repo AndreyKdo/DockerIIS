@@ -213,24 +213,17 @@ funciona igual con cable, con wifi de invitados o sin red física.
 
 ### Cómo fijar la IP de la VM
 
-Para no depender de lo que entregue el DHCP, hay dos caminos:
+Para no depender de lo que entregue el DHCP, para VMware Workstation, no es necesario usar una reserva DHCP desde la interfaz gráfica. Se recomienda configurar una IP estática directamente en la VM Ubuntu mediante **Netplan**, fuera del rango DHCP de VMnet8.
 
-- **Reserva DHCP en VMware:** abrir el **Virtual Network Editor** como administrador,
-  seleccionar **VMnet8**, entrar a **DHCP Settings…** y asociar la MAC de la VM a una IP
-  fija dentro del rango NAT.
-- **IP estática en Ubuntu:** configurarla en netplan (`/etc/netplan/*.yaml`) dentro del
-  rango de VMnet8, usando como gateway la IP `.2` de esa subred (la puerta NAT de VMware).
+Ejemplo:
 
-### Opcional: reenvío de puertos NAT (usar la IP del host)
+Red:     192.168.6.0/24
+IP VM:   192.168.6.129
+Gateway: 192.168.6.2
+DNS:     192.168.6.2
+Rango DHCP VMware vNet NAT: .130-.254 
 
-Si se prefiere no depender de la IP de la VM, VMware permite publicar el puerto en el host:
-**Virtual Network Editor > VMnet8 > NAT Settings… > Port Forwardings > Add**, mapeando el
-puerto `1433` del host al `1433` de la IP de la VM. Con eso, los microservicios pueden
-apuntar `SQL_SERVER` a `host.docker.internal` (el valor por defecto en el código si no se
-define la variable) y SSMS puede conectarse a `localhost,1433`.
-
-Es una alternativa cómoda, pero agrega una capa más que explicar; para nuestro objetivo
-es más claro apuntar directamente a la IP de la VM.
+Esto evita depender del DHCP de VMware y mantiene una IP fija para la VM.
 
 ### Solución de problemas: la VM no obtiene IP o se queda atascada al iniciar (red)
 
