@@ -1,0 +1,24 @@
+services:
+
+  # ---------------------------------------------------------------
+  # Microservicio: consulta-clientes (Node.js) -> GET /consultaclientes
+  # Version Node.js del microservicio original en .NET, para validar
+  # que la conexion a SQL Server es transferible entre lenguajes.
+  # ---------------------------------------------------------------
+  consulta-clientes-node:
+    build:
+      context: .
+    container_name: consulta-clientes-node
+    ports:
+      - "5005:8080"
+    environment:
+      SQL_SERVER: "192.168.6.129"
+      SQL_DATABASE: "DockerWebinar"
+      SQL_USER: "sa"
+      SQL_PASSWORD: "DockerDemo2026!"
+    restart: unless-stopped
+    networks:
+      - dockerlab
+
+networks:
+  dockerlab:

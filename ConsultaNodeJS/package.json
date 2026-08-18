@@ -1,0 +1,14 @@
+{
+  "name": "consulta-clientes",
+  "version": "1.0.0",
+  "description": "Microservicio Node.js - GET /consultaclientes (version Node del original .NET, mismo contrato)",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mssql": "^11.0.1"
+  }
+}
