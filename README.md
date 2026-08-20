@@ -1,7 +1,6 @@
 # DockerWebinar — Laboratorio híbrido Windows + Linux Containers
 
-Laboratorio de demostración para el **webinar dirigido a desarrolladores** (jueves 17 de
-setiembre de 2026, 10:00 a.m.). El objetivo no es la aplicación en sí —un CRUD mínimo de
+Laboratorio de demostración para el **webinar dirigido a desarrolladores**. El objetivo no es la aplicación en sí —un CRUD mínimo de
 clientes y pagos—, sino usarla para mostrar, en vivo y sobre un caso real,
 los conceptos que un desarrollador necesita para empezar a trabajar con Docker.
 
